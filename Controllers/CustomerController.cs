@@ -12,6 +12,7 @@ namespace DotnetWebApiWithEFCodeFirst.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class CustomerController : ControllerBase
     {
         private readonly SampleDBContext _context;
@@ -21,12 +22,26 @@ namespace DotnetWebApiWithEFCodeFirst.Controllers
             _context = context;
         }
 
-        // GET: api/Customer
+        //// GET: api/Customer
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer()
+        //{
+        //    return await _context.Customer.ToListAsync();
+        //}
+
+        // Get: api/customer
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer()
         {
-            return await _context.Customer.ToListAsync();
+            List<Customer> list = new List<Customer>();
+            var model = await _context.Customer.ToListAsync();
+            foreach (var person in model)
+            {
+                list.Add(new Customer { CustomerId = person.CustomerId, FirstName = person.FirstName, LastName = person.LastName, Email = person.Email });
+            }
+            return Ok(list);
         }
+
 
         // GET: api/Customer/5
         [HttpGet("{id}")]
@@ -39,7 +54,7 @@ namespace DotnetWebApiWithEFCodeFirst.Controllers
                 return NotFound();
             }
 
-            return customer;
+            return Ok(customer);
         }
 
         // PUT: api/Customer/5

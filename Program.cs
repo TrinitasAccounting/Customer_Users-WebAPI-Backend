@@ -21,6 +21,7 @@ namespace DotnetWebApiWithEFCodeFirst
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddCors();
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<SampleDBContext>(options => options.UseSqlServer(connectionString));
 
@@ -28,6 +29,14 @@ namespace DotnetWebApiWithEFCodeFirst
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            //app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins(" http://localhost:3000"));
+
+            app.UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+            });
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
